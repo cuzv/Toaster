@@ -28,9 +28,9 @@ final class RootViewController: UIViewController {
     appearance.backgroundColor = .lightGray
     appearance.textColor = .black
     appearance.font = .boldSystemFont(ofSize: 16)
-    appearance.textInsets = UIEdgeInsets(top: 15, left: 20, bottom: 15, right: 20)
-    appearance.bottomOffsetPortrait = 100
-    appearance.cornerRadius = 20
+    appearance.textInsets = UIEdgeInsets(top: 9, left: 20, bottom: 9, right: 20)
+    appearance.cornerRadius = 10
+    appearance.position = ToastView.Position(topOffsetPortrait: 64, topOffsetLandscape: 44)
   }
 
   @objc dynamic func showButtonTouchUpInside() {

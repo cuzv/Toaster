@@ -1,7 +1,55 @@
 import UIKit
 
 open class ToastView: UIView {
+    public class Position: NSObject {
+        var topOffsetPortrait: CGFloat = 0
+        var topOffsetLandscape: CGFloat = 0
+        var bottomOffsetPortrait: CGFloat = 0
+        var bottomOffsetLandscape: CGFloat = 0
 
+        enum PositionType: Int {
+            case top
+            case bottom
+        }
+        
+        var type: PositionType
+        
+        public init(topOffsetPortrait: CGFloat, topOffsetLandscape: CGFloat) {
+            self.topOffsetPortrait = topOffsetPortrait
+            self.topOffsetLandscape = topOffsetLandscape
+            type = .top
+        }
+        
+        public init(bottomOffsetPortrait: CGFloat, bottomOffsetLandscape: CGFloat) {
+            self.bottomOffsetPortrait = bottomOffsetPortrait
+            self.bottomOffsetLandscape = bottomOffsetLandscape
+            type = .bottom
+        }
+    }
+    
+    @objc dynamic open var position: Position = {
+        let offsetPortrait: CGFloat
+        let offsetLandscape: CGFloat
+        switch UIDevice.current.userInterfaceIdiom {
+        case .unspecified:
+            offsetPortrait = 30
+            offsetLandscape = 20
+        case .phone:
+            offsetPortrait = 30
+            offsetLandscape = 20
+        case .pad:
+            offsetPortrait = 60
+            offsetLandscape = 40
+        case .tv:
+            offsetPortrait = 90
+            offsetLandscape = 60
+        case .carPlay:
+            offsetPortrait = 30
+            offsetLandscape = 20
+        }
+        return .init(bottomOffsetPortrait: offsetPortrait, bottomOffsetLandscape: offsetLandscape)
+    }()
+    
   // MARK: Properties
 
   open var text: String? {
@@ -40,27 +88,26 @@ open class ToastView: UIView {
   }
 
   /// The bottom offset from the screen's bottom in portrait mode.
-  @objc open dynamic var bottomOffsetPortrait: CGFloat = {
-    switch UIDevice.current.userInterfaceIdiom {
-    case .unspecified: return 30
-    case .phone: return 30
-    case .pad: return 60
-    case .tv: return 90
-    case .carPlay: return 30
+  @objc open dynamic var bottomOffsetPortrait: CGFloat {
+    get {
+        return position.bottomOffsetPortrait
     }
-  }()
+    set {
+        position.bottomOffsetPortrait = newValue
+        position.type = .bottom
+    }
+  }
 
   /// The bottom offset from the screen's bottom in landscape mode.
-  @objc open dynamic var bottomOffsetLandscape: CGFloat = {
-    switch UIDevice.current.userInterfaceIdiom {
-    case .unspecified: return 20
-    case .phone: return 20
-    case .pad: return 40
-    case .tv: return 60
-    case .carPlay: return 20
+  @objc open dynamic var bottomOffsetLandscape: CGFloat {
+    get {
+        return position.bottomOffsetLandscape
     }
-  }()
-
+    set {
+        position.bottomOffsetLandscape = newValue
+        position.type = .bottom
+    }
+  }
 
   // MARK: UI
 
@@ -85,7 +132,7 @@ open class ToastView: UIView {
       }
     }()
     self.numberOfLines = 0
-    self.textAlignment = .center
+    self.textAlignment = .left
     return self
   }()
 
@@ -146,6 +193,15 @@ open class ToastView: UIView {
     let backgroundViewSize = self.backgroundView.frame.size
     x = (width - backgroundViewSize.width) * 0.5
     y = height - (backgroundViewSize.height + y)
+    
+    if position.type == .top {
+        if orientation.isPortrait || !ToastWindow.shared.shouldRotateManually {
+            y = position.topOffsetPortrait
+        } else {
+            y = position.topOffsetLandscape
+        }
+    }
+    
     self.frame = CGRect(
       x: x,
       y: y,
