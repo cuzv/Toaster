@@ -25,18 +25,18 @@ final class RootViewController: UIViewController {
 
   func configureAppearance() {
     let appearance = ToastView.appearance()
-    appearance.backgroundColor = .lightGray
+    appearance.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
     appearance.textColor = .black
     appearance.font = .boldSystemFont(ofSize: 16)
-    appearance.textInsets = UIEdgeInsets(top: 9, left: 20, bottom: 9, right: 20)
-    appearance.cornerRadius = 10
+    appearance.textInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    appearance.cornerRadius = 6
     appearance.position = ToastView.Position(topOffsetPortrait: 64, topOffsetLandscape: 44)
+//    appearance.position = ToastView.Position(bottomOffsetPortrait: 64, bottomOffsetLandscape: 44)
   }
 
   @objc dynamic func showButtonTouchUpInside() {
     Toast(text: "Basic Toast").show()
-    Toast(text: "You can set duration. `Delay.short` means 2 seconds.\n" +
-      "`Delay.long` means 3.5 seconds.",
+    Toast(text: "You can set duration. `Delay.short` means 2 seconds.`Delay.long` means 3.5 seconds.",
           duration: Delay.long).show()
     Toast(text: "With delay, Toaster will be shown after delay.", delay: 1, duration: 5).show()
   }

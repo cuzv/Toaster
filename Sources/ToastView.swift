@@ -153,61 +153,42 @@ open class ToastView: UIView {
 
   // MARK: Layout
 
+    private var isPortrait: Bool {
+        return UIApplication.shared.statusBarOrientation.isPortrait || !ToastWindow.shared.shouldRotateManually
+    }
+    
   override open func layoutSubviews() {
     super.layoutSubviews()
-    let containerSize = ToastWindow.shared.frame.size
-    let constraintSize = CGSize(
-      width: containerSize.width * (280.0 / 320.0),
-      height: CGFloat.greatestFiniteMagnitude
-    )
-    let textLabelSize = self.textLabel.sizeThatFits(constraintSize)
-    self.textLabel.frame = CGRect(
-      x: self.textInsets.left,
-      y: self.textInsets.top,
-      width: textLabelSize.width,
-      height: textLabelSize.height
-    )
-    self.backgroundView.frame = CGRect(
-      x: 0,
-      y: 0,
-      width: self.textLabel.frame.size.width + self.textInsets.left + self.textInsets.right,
-      height: self.textLabel.frame.size.height + self.textInsets.top + self.textInsets.bottom
-    )
 
-    var x: CGFloat
-    var y: CGFloat
-    var width: CGFloat
-    var height: CGFloat
-
-    let orientation = UIApplication.shared.statusBarOrientation
-    if orientation.isPortrait || !ToastWindow.shared.shouldRotateManually {
-      width = containerSize.width
-      height = containerSize.height
-      y = self.bottomOffsetPortrait
-    } else {
-      width = containerSize.height
-      height = containerSize.width
-      y = self.bottomOffsetLandscape
-    }
-
-    let backgroundViewSize = self.backgroundView.frame.size
-    x = (width - backgroundViewSize.width) * 0.5
-    y = height - (backgroundViewSize.height + y)
+    let width = isPortrait ? ToastWindow.shared.frame.size.width : ToastWindow.shared.frame.size.height
     
+    let textMaxWidth = ToastWindow.shared.frame.size.width - 40 - textInsets.left - textInsets.right
+    let textConstraintSize = CGSize(width: textMaxWidth, height: CGFloat.greatestFiniteMagnitude)
+    let textSize = textLabel.sizeThatFits(textConstraintSize)
+    let textCenter = CGPoint(x: width / 2.0, y: textSize.height / 2.0 + textInsets.top)
+    textLabel.bounds = CGRect(origin: .zero, size: textSize)
+    textLabel.center = textCenter
+    
+    let backgroundSize = CGSize(width: textSize.width + textInsets.left + textInsets.right, height: textSize.height + textInsets.top + textInsets.bottom)
+    backgroundView.bounds = CGRect(origin: .zero, size: backgroundSize)
+    backgroundView.center = textLabel.center
+    
+    let y: CGFloat
     if position.type == .top {
-        if orientation.isPortrait || !ToastWindow.shared.shouldRotateManually {
+        if isPortrait {
             y = position.topOffsetPortrait
         } else {
             y = position.topOffsetLandscape
         }
+    } else {
+        if isPortrait {
+            y = ToastWindow.shared.frame.size.height - position.bottomOffsetPortrait - backgroundSize.height
+        } else {
+            y = ToastWindow.shared.frame.size.width - position.bottomOffsetLandscape - backgroundSize.height
+        }
     }
     
-    self.frame = CGRect(
-      x: x,
-      y: y,
-      width: backgroundViewSize.width,
-      height: backgroundViewSize.height
-    )
+    self.frame = CGRect(x: 0, y: y, width: width, height: backgroundSize.height)
   }
 
   override open func hitTest(_ point: CGPoint, with event: UIEvent!) -> UIView? {
