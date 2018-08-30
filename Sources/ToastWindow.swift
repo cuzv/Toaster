@@ -39,6 +39,10 @@ open class ToastWindow: UIWindow {
     }
     set { /* Do nothing */ }
   }
+    
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
 
   public override init(frame: CGRect) {
     super.init(frame: frame)

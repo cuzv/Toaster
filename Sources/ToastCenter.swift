@@ -16,7 +16,10 @@ open class ToastCenter {
 
   public static let `default` = ToastCenter()
 
-
+  deinit {
+    NotificationCenter.default.removeObserver(self)
+  }
+    
   // MARK: Initializing
 
   init() {
