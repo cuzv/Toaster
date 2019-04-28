@@ -29,7 +29,7 @@ final class RootViewController: UIViewController {
     appearance.textColor = .black
     appearance.font = .boldSystemFont(ofSize: 16)
     appearance.textInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-    appearance.cornerRadius = 6
+    appearance.backgroundCornerRadius = 6
     appearance.position = ToastView.Position(topOffsetPortrait: 64, topOffsetLandscape: 44)
 //    appearance.position = ToastView.Position(bottomOffsetPortrait: 64, bottomOffsetLandscape: 44)
   }
