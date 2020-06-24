@@ -46,6 +46,9 @@ open class ToastView: UIView {
         case .carPlay:
             offsetPortrait = 30
             offsetLandscape = 20
+        case .mac:
+            offsetPortrait = 30
+            offsetLandscape = 20
         }
         return .init(bottomOffsetPortrait: offsetPortrait, bottomOffsetLandscape: offsetLandscape)
     }()
@@ -129,6 +132,7 @@ open class ToastView: UIView {
       case .pad: return .systemFont(ofSize: 16)
       case .tv: return .systemFont(ofSize: 20)
       case .carPlay: return .systemFont(ofSize: 12)
+      case .mac:  return .systemFont(ofSize: 20)
       }
     }()
     self.numberOfLines = 0
